@@ -12,8 +12,8 @@ export const getSpeechFile = async text => {
     const params = {
       text: text,
       lang: 'ru-RU',
-      voice: 'zahar',
-      emotion: 'neutral',
+      voice: 'jane',
+      emotion: 'good',
       folderId: config.get('FOLDER_ID'),
     }
     const queryString = new URLSearchParams(params).toString();
@@ -27,6 +27,7 @@ export const getSpeechFile = async text => {
     //   },
     //   responseType: "stream",
     // });
+
     const response = await fetch(requestUrl, {
       method: 'POST',
       headers: {
