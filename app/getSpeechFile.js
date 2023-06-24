@@ -14,7 +14,7 @@ export const getSpeechFile = async text => {
       lang: 'ru-RU',
       voice: 'zahar',
       emotion: 'neutral',
-      folderId: 'b1gbm6cbmg85sbgg0qk0',
+      folderId: config.get('FOLDER_ID'),
     }
     const queryString = new URLSearchParams(params).toString();
     const requestUrl = `${url}?${queryString}`;
@@ -30,7 +30,7 @@ export const getSpeechFile = async text => {
     const response = await fetch(requestUrl, {
       method: 'POST',
       headers: {
-        Authorization: 'Api-Key AQVN10FDKWLwSb232CwZspVBH8dxgo_nybiIz9DB',
+        Authorization: `Api-Key ${config.get('SPEECH_KEY')}`,
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       responseType: 'stream',
