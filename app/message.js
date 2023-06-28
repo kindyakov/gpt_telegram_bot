@@ -3,6 +3,7 @@ import { oggConverter } from "./oggConvert.js"
 import { INITIAL_SESSION } from "../server.js";
 import { processTextToChat } from "./logic.js";
 import { getSpeechFile } from "./getSpeechFile.js";
+import { removeFile } from './utils.js'
 
 export const voiceMessage = async ctx => {
   ctx.session ??= INITIAL_SESSION
@@ -22,10 +23,10 @@ export const voiceMessage = async ctx => {
     const responseGPT = await processTextToChat(ctx, text)
     console.log('Ответ от gtp получен')
     // Голосовой ответ от яндекс speeshKit
-    const filePath = await getSpeechFile(responseGPT)
+    const oggfilePath = await getSpeechFile(responseGPT)
     console.log('Ответ от speechKit получен')
     // путь mp3 файла
-    const mp3PathGpt = await oggConverter.toMp3(filePath, 'speech')
+    const mp3PathGpt = await oggConverter.toMp3(oggfilePath, 'speech')
     console.log('Файл сконвертирован')
     // удаляем сообщение
     await ctx.deleteMessage(messageToDeleteId);
@@ -33,6 +34,8 @@ export const voiceMessage = async ctx => {
       { parse_mode: 'HTML' })
     await ctx.reply(responseGPT)
     await ctx.replyWithVoice({ source: mp3PathGpt });
+    removeFile(mp3Path)
+    removeFile(mp3PathGpt)
   } catch (error) {
     console.log(`Ошибка голосового сообщения`, error.message)
   }
@@ -47,15 +50,16 @@ export const textMessage = async ctx => {
     const responseGPT = await processTextToChat(ctx, ctx.message.text)
     console.log('Ответ от gtp получен')
     // Голосовой ответ от яндекс speeshKit
-    const filePath = await getSpeechFile(responseGPT)
+    const oggfilePath = await getSpeechFile(responseGPT)
     console.log('Ответ от speechKit получен')
     // путь mp3 файла
-    const mp3PathGpt = await oggConverter.toMp3(filePath, 'speech')
+    const mp3PathGpt = await oggConverter.toMp3(oggfilePath, 'speech')
     console.log('Файл сконвертирован')
     // удаляем сообщение
     await ctx.deleteMessage(messageToDeleteId);
     await ctx.reply(responseGPT)
     await ctx.replyWithVoice({ source: mp3PathGpt });
+    removeFile(mp3PathGpt)
   } catch (error) {
     console.log(`Ошибка текстового сообщения`, error)
   }
