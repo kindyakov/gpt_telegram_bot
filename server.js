@@ -1,20 +1,13 @@
-import express from "express";
-import cors from "cors";
 import { Telegraf, session } from "telegraf";
 import { message } from 'telegraf/filters'
-import config from 'config'
 import { voiceMessage, textMessage } from "./app/message.js";
 import { start } from "./app/command.js";
+import dotenv from "dotenv";
 
-
-const app = express();
+dotenv.config()
 
 export const INITIAL_SESSION = { messages: [] }
-
-const bot = new Telegraf(config.get('TELEGRAM_TOKEN_BOT'))
-
-app.use(cors()) // для отправки запросов с браузера
-app.use(express.json())
+export const bot = new Telegraf(process.env.TELEGRAM_TOKEN_BOT)
 
 bot.use(session())
 

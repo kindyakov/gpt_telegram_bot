@@ -3,26 +3,27 @@ import config from "config";
 import fs from 'fs'
 import { dirname, resolve } from "path";
 import { fileURLToPath } from 'url'
+import dotenv from "dotenv";
+dotenv.config()
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export const getSpeechFile = async text => {
   try {
-    const url = 'https://tts.api.cloud.yandex.net/speech/v1/tts:synthesize'
     const params = {
       text: text,
       lang: 'ru-RU',
       voice: 'zahar',
       // emotion: 'neutral',
-      folderId: config.get('FOLDER_ID'),
+      folderId: process.env.FOLDER_ID,
     }
     const queryString = new URLSearchParams(params).toString();
-    const requestUrl = `${url}?${queryString}`;
+    const requestUrl = `${config.get('SPEECH_URL')}?${queryString}`;
 
     // const response = await axios.post(url, {
     //   params,
     //   headers: {
-    //     Authorization: "Api-Key AQVN10FDKWLwSb232CwZspVBH8dxgo_nybiIz9DB",
+    //     Authorization: `Api-Key ${process.env.SPEECH_KEY}`,
     //     'content-type': 'application/x-www-form-urlencoded'
     //   },
     //   responseType: "stream",
@@ -31,7 +32,7 @@ export const getSpeechFile = async text => {
     const response = await fetch(requestUrl, {
       method: 'POST',
       headers: {
-        Authorization: `Api-Key ${config.get('SPEECH_KEY')}`,
+        Authorization: `Api-Key ${process.env.SPEECH_KEY}`,
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       responseType: 'stream',

@@ -1,6 +1,3 @@
 {
-  "TELEGRAM_TOKEN_BOT": "6272158268:AAFp-5fcXpDY2z_wrE3VEsFMek5T03Rd0TU",
-  "OPENAI_KEY": "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",
-  "FOLDER_ID": "b1gbm6cbmg85sbgg0qk0",
-  "SPEECH_KEY": "AQVN10FDKWLwSb232CwZspVBH8dxgo_nybiIz9DB"
+  "SPEECH_URL": "https://tts.api.cloud.yandex.net/speech/v1/tts:synthesize"
 }
