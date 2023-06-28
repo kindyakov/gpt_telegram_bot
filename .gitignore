@@ -1,7 +1,7 @@
 node_modules
+config/default.json
 .vscode
 .idea
 voices/*.mp3
 voices/*.ogg
 API_KEY.json
-config/default.json
