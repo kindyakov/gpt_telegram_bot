@@ -12,8 +12,8 @@ export const getSpeechFile = async text => {
     const params = {
       text: text,
       lang: 'ru-RU',
-      voice: 'jane',
-      emotion: 'good',
+      voice: 'zahar',
+      // emotion: 'neutral',
       folderId: config.get('FOLDER_ID'),
     }
     const queryString = new URLSearchParams(params).toString();
