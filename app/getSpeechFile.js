@@ -37,7 +37,7 @@ export const getSpeechFile = async text => {
       },
       responseType: 'stream',
     });
-
+    console.log('ответ получен speeh')
     const buffer = await response.arrayBuffer()
     const view = new Uint8Array(buffer);
     const filePath = resolve(__dirname, '../voices', 'speech.ogg')
