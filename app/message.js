@@ -12,7 +12,7 @@ let click = false
 const handlerVoiceBtn = async (ctx, responseGPT) => {
   try {
     if (click) return
-    const messageToDeleteId = ctx.message.message_id + 3;
+    // const messageToDeleteId = ctx.message.message_id + 3;
     await ctx.reply('Обрабатываю ваш запрос...')
     // Голосовой ответ от яндекс speeshKit
     const oggfilePath = await getSpeechFile(responseGPT)
@@ -21,7 +21,7 @@ const handlerVoiceBtn = async (ctx, responseGPT) => {
     const mp3PathGpt = await oggConverter.toMp3(oggfilePath, 'speech')
     console.log('Файл сконвертирован')
     // удаляем сообщение
-    await ctx.deleteMessage(messageToDeleteId);
+    // await ctx.deleteMessage(messageToDeleteId);
     await ctx.replyWithVoice({ source: mp3PathGpt });
     click = true
     // removeFile(oggfilePath)
@@ -34,8 +34,8 @@ const handlerVoiceBtn = async (ctx, responseGPT) => {
 export const voiceMessage = async ctx => {
   ctx.session ??= INITIAL_SESSION
   try {
-    // await ctx.reply('Обрабатываю ваш запрос...')
-    // const messageToDeleteId = ctx.message.message_id + 1;
+    await ctx.reply('Обрабатываю ваш запрос...')
+    const messageToDeleteId = ctx.message.message_id + 1;
     const buttonOptions = Markup.inlineKeyboard([
       [Markup.button.callback('Озвучить', 'voiceBtn')]
     ])
@@ -52,7 +52,7 @@ export const voiceMessage = async ctx => {
     const responseGPT = await processTextToChat(ctx, text)
     console.log('Ответ от gtp получен')
     // удаляем сообщение
-    // await ctx.deleteMessage(messageToDeleteId);
+    await ctx.deleteMessage(messageToDeleteId);
     await ctx.reply(`<b>Ваш запрос:</b> <i>${text}</i>`,
       { parse_mode: 'HTML' })
     await ctx.reply(responseGPT, buttonOptions)
