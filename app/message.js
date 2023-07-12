@@ -13,7 +13,7 @@ const handlerVoiceBtn = async (ctx, responseGPT) => {
   try {
     if (click) return
     // const messageToDeleteId = ctx.message.message_id + 3;
-    await ctx.reply('Обрабатываю ваш запрос...')
+    // await ctx.reply('Обрабатываю ваш запрос...')
     // Голосовой ответ от яндекс speeshKit
     const oggfilePath = await getSpeechFile(responseGPT)
     console.log('Файл speech.ogg создан')
@@ -35,9 +35,9 @@ export const voiceMessage = async ctx => {
   ctx.session ??= INITIAL_SESSION
   try {
     await ctx.reply('Обрабатываю ваш запрос...')
-    const messageToDeleteId = ctx.message.message_id + 1;
+    const messageToDeleteId = +ctx.message.message_id + 1;
     const buttonOptions = Markup.inlineKeyboard([
-      [Markup.button.callback('Озвучить', 'voiceBtn')]
+      [Markup.button.callback('Озвучить', `voiceBtn_${ctx.message.message_id}`)]
     ])
     // сылка на файл с голосовым сообщением
     const link = await ctx.telegram.getFileLink(ctx.message.voice.file_id)
@@ -53,12 +53,12 @@ export const voiceMessage = async ctx => {
     console.log('Ответ от gtp получен')
     // удаляем сообщение
     await ctx.deleteMessage(messageToDeleteId);
-    await ctx.reply(`<b>Ваш запрос:</b> <i>${text}</i>`,
-      { parse_mode: 'HTML' })
+    await ctx.reply(`<b>Ваш запрос:</b> <i>${text}</i>`, { parse_mode: 'HTML' })
     await ctx.reply(responseGPT, buttonOptions)
     removeFile(mp3Path)
     click = false
-    bot.action('voiceBtn', async ctx => await handlerVoiceBtn(ctx, responseGPT));
+    bot.action(`voiceBtn_${ctx.message.message_id}`,
+      async () => await handlerVoiceBtn(ctx, responseGPT));
   } catch (error) {
     console.log(`Ошибка голосового сообщения:`, error.message)
   }
@@ -68,9 +68,9 @@ export const textMessage = async ctx => {
   ctx.session ??= INITIAL_SESSION
   try {
     await ctx.reply('Обрабатываю ваш запрос...')
-    const messageToDeleteId = ctx.message.message_id + 1;
+    const messageToDeleteId = +ctx.message.message_id + 1;
     const buttonOptions = Markup.inlineKeyboard([
-      [Markup.button.callback('Озвучить', 'voiceBtn')]
+      [Markup.button.callback('Озвучить', `voiceBtn_${ctx.message.message_id}`)]
     ])
     // Ответ gtp
     const responseGPT = await processTextToChat(ctx, ctx.message.text)
@@ -80,7 +80,8 @@ export const textMessage = async ctx => {
     await ctx.deleteMessage(messageToDeleteId);
     await ctx.reply(responseGPT, buttonOptions)
     click = false
-    bot.action('voiceBtn', async () => await handlerVoiceBtn(ctx, responseGPT));
+    bot.action(`voiceBtn_${ctx.message.message_id}`,
+      async () => await handlerVoiceBtn(ctx, responseGPT));
   } catch (error) {
     console.log(`Ошибка текстового сообщения:`, error.message)
   }
